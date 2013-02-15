@@ -1,0 +1,59 @@
+// ConstantSpeed.pde
+// -*- mode: C++ -*-
+//
+// Shows how to run AccelStepper in the simplest,
+// fixed speed mode with no accelerations
+// Requires the AFMotor library (https://github.com/adafruit/Adafruit-Motor-Shield-library)
+// And AccelStepper with AFMotor support (https://github.com/adafruit/AccelStepper)
+// Public domain!
+
+#include <AccelStepper.h>
+#include <AFMotor.h>
+
+AF_Stepper motor1(2000, 2);
+int sensorPin = A8;
+int sensorReading = 0;
+int prevMapped = 0;
+int sensorMax = 0;
+int sensorMin = 0;
+
+// you can change these to DOUBLE or INTERLEAVE or MICROSTEP!
+void forwardstep() {  
+  motor1.onestep(FORWARD, SINGLE);
+}
+void backwardstep() {  
+  motor1.onestep(BACKWARD, SINGLE);
+}
+
+AccelStepper stepper(forwardstep, backwardstep); // use functions to step
+
+void setup()
+{  
+   Serial.begin(9600);           // set up Serial library at 9600 bps
+   Serial.println("Stepper test!");
+  
+   motor1.setSpeed(10);  
+}
+
+void loop()
+{  
+  sensorReading = analogRead(sensorPin);
+  if (sensorReading > sensorMax)
+    {sensorMax = sensorReading;
+    }
+  
+  sensorReading = map(sensorReading,0,sensorMax,-5,5);
+  Serial.println(sensorReading);
+  //if (prevMapped != sensorReading)
+  if (prevMapped > 0)
+  {motor1.step(1, FORWARD, SINGLE);
+  delay(5-prevMapped);
+  }
+  else if (prevMapped < 0)
+       {motor1.step(1, BACKWARD, DOUBLE);
+       delay(5+prevMapped);
+       }
+  
+  prevMapped = sensorReading;
+   //stepper.runSpeed();
+}
