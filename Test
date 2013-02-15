@@ -1,0 +1,17 @@
+#include <AFMotor.h>  //Подключаем заголовочный файл библиотеки
+//Создаем объект для двигателя на 2 канале (M3 и M4)
+AF_Stepper motor(2048, 2);
+void setup() {
+  motor.setSpeed(10);  // 10 оборотов в минуту
+}
+
+void loop() {
+  motor.step(2048, FORWARD, SINGLE);     //1 оборот
+  motor.step(2048, BACKWARD, DOUBLE);    //1 оборот
+  //в режиме INTERLEAVE скорость в 2 раза ниже, а шаги в
+  //2 раза меньше. То же число полушагов даст 0.5 оборота
+  motor.step(2048, FORWARD, INTERLEAVE); //0.5 оборота
+  motor.step(1024, BACKWARD, MICROSTEP); //0.5 оборота
+  motor.release();
+  delay(1000);
+}
