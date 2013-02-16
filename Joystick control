@@ -16,6 +16,7 @@ int sensorReading = 0;
 int prevMapped = 0;
 int sensorMax = 0;
 int sensorMin = 0;
+int mode = MICROSTEP;
 
 // you can change these to DOUBLE or INTERLEAVE or MICROSTEP!
 void forwardstep() {  
@@ -42,15 +43,15 @@ void loop()
     {sensorMax = sensorReading;
     }
   
-  sensorReading = map(sensorReading,0,sensorMax,-5,5);
+  sensorReading = map(sensorReading,0,1023,-5,5);
   Serial.println(sensorReading);
   //if (prevMapped != sensorReading)
   if (prevMapped > 0)
-  {motor1.step(1, FORWARD, SINGLE);
+  {motor1.step(1, FORWARD, mode);
   delay(5-prevMapped);
   }
   else if (prevMapped < 0)
-       {motor1.step(1, BACKWARD, DOUBLE);
+       {motor1.step(1, BACKWARD, mode);
        delay(5+prevMapped);
        }
   
